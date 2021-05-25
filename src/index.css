@@ -1,3 +1,7 @@
+:root {
+    --square-size: calc(min(100vw, 100vh) * 0.2);
+}
+
 body {
     font: 14px "Century Gothic", Futura, sans-serif;
     margin: 20px;
@@ -16,21 +20,22 @@ ul {
 
 .status {
     margin-bottom: 10px;
+    font-size: calc(var(--square-size) / 4);
 }
 
 .square {
     background: #fff;
     border: 1px solid #999;
     float: left;
-    font-size: 24px;
+    font-size: calc(var(--square-size) * 0.8);
     font-weight: bold;
-    line-height: 34px;
-    height: 34px;
+    line-height: var(--square-size);
+    height: var(--square-size);
     margin-right: -1px;
     margin-top: -1px;
     padding: 0;
     text-align: center;
-    width: 34px;
+    width: var(--square-size);
 }
 
 .square:focus {
