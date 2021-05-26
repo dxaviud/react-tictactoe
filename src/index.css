@@ -14,6 +14,11 @@ ol {
     padding-left: calc(var(--font-size) * 2);
 }
 
+.past-move {
+    border-radius: 0;
+    font-size: calc(var(--font-size) / 1.5);
+}
+
 .board-row:after {
   clear: both;
   content: "";
