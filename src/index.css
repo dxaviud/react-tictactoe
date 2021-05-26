@@ -20,14 +20,14 @@ ol {
 }
 
 .board-row:after {
-  clear: both;
-  content: "";
-  display: table;
+    /*This somehow prevents the board from distorting*/
+    clear: both;
+    content: "";
+    display: table;
 }
 
 .status {
     margin-bottom: 10px;
-    font-size: calc(var(--square-size) / 4);
 }
 
 .square {
@@ -43,10 +43,6 @@ ol {
     font-weight: bold;
     line-height: var(--square-size);
     text-align: center;
-}
-
-.kbd-navigation .square:focus {
-    background: #ddd;
 }
 
 .game {
