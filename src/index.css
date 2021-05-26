@@ -1,5 +1,6 @@
 :root {
     --square-size: calc(min(100vw, 100vh) * 0.2);
+    --square-border: 1.5px;
 }
 
 body {
@@ -25,21 +26,17 @@ ul {
 
 .square {
     background: #fff;
-    border: 1px solid #999;
+    border: var(--square-border) solid #777;
+    width: var(--square-size);
+    height: var(--square-size);
+    padding: 0;
+    margin-top: calc(-1 * var(--square-border));
+    margin-right: calc(-1 * var(--square-border));
     float: left;
     font-size: calc(var(--square-size) * 0.8);
     font-weight: bold;
     line-height: var(--square-size);
-    height: var(--square-size);
-    margin-right: -1px;
-    margin-top: -1px;
-    padding: 0;
     text-align: center;
-    width: var(--square-size);
-}
-
-.square:focus {
-    outline: none;
 }
 
 .kbd-navigation .square:focus {
