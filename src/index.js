@@ -47,80 +47,81 @@ class Game extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            history: [
+            moveHistory: [
                 {
                     squares: Array(9).fill(null),
                 },
             ],
-            moveNumber: 0,
             xIsNext: true,
         };
     }
 
     handleClick(i) { // i is the index of the square clicked (ranges from 0 - 8)
-        const history = this.state.history.slice(0, this.state.moveNumber + 1);
-        const current = history[history.length - 1];
-        if (calculateWinner(current.squares) || current.squares[i]) {
+        const moveHistory = this.state.moveHistory.slice();
+        const currentMove = moveHistory[moveHistory.length - 1];
+        if (calculateWinner(currentMove.squares) || currentMove.squares[i]) {
             return; // gameover or this square is filled, so skip handling
         }
-        const squares = current.squares.slice();
-        squares[i] = this.state.xIsNext ? "X" : "O";
+        const newSquares = currentMove.squares.slice();
+        newSquares[i] = this.state.xIsNext ? "X" : "O";
+        const newMove = {
+            squares: newSquares,
+        };
+        const newMoveHistory = moveHistory.concat(newMove);
         this.setState((prevState) => ({
-            history: prevState.history.concat([
-                {
-                    squares: squares,
-                },
-            ]),
-            moveNumber: history.length,
+            moveHistory: newMoveHistory,
             xIsNext: !prevState.xIsNext,
         }));
     }
 
     jumpTo(moveNumber) {
         this.setState((prevState) => ({
-            history: prevState.history.slice(0, moveNumber + 1), // delete the portion of history after step
-            moveNumber: moveNumber,
+            moveHistory: prevState.moveHistory.slice(0, moveNumber + 1), // delete the portion of moveHistory after step
             xIsNext: (moveNumber % 2) === 0,
         }));
     }
 
-    render() {
-        const history = this.state.history;
-        const current = history[this.state.moveNumber];
-        const winner = calculateWinner(current.squares);
+    moveNumber() {
+        return this.state.moveHistory.length - 1;
+    }
 
-        const moves = history.map((move, moveNumber) => {
-            const desc = moveNumber ? "Go to move #" + moveNumber : "Go to game start";
+    render() {
+        const moveHistory = this.state.moveHistory;
+        const moveHistoryButtonList = moveHistory.map((move, moveNumber) => {
+            const moveDescription = moveNumber ? "Go to move #" + moveNumber : "Go to game start";
             return (
                 <li key={moveNumber}>
                     <button
                         className="past-move"
                         onClick={() => this.jumpTo(moveNumber)}
                     >
-                        {desc}
+                        {moveDescription}
                     </button>
                 </li>
             );
         });
-
+        
+        const currentMove = moveHistory[moveHistory.length - 1];
+        const winner = calculateWinner(currentMove.squares);
         let status;
         if (winner) {
             status = "Winner: " + winner;
         } else {
             status = "Next player: " + (this.state.xIsNext ? "X" : "O");
         }
-
+        
         return (
             <div className="game">
                 <div className="game-board">
                     <Board
-                        squares={current.squares}
+                        squares={currentMove.squares}
                         onClick={i => this.handleClick(i)}
                     />
                 </div>
                 <div className="game-info">
                     <div className="status">{status}</div>
-                    <ol>{moves}</ol>
+                    <div className="status">Current move #: {this.moveNumber()}</div>
+                    <ol>{moveHistoryButtonList}</ol>
                 </div>
             </div>
         );
@@ -157,7 +158,7 @@ ReactDOM.render(<Game />, document.getElementById("root"));
 
 // Things I can add to the game:
 
-// Display the location for each move in the format (col, row) in the move history list.
+// Display the location for each move in the format (col, row) in the move moveHistory list.
 // Bold the currently selected item in the move list.
 // Rewrite Board to use two loops to make the squares instead of hardcoding them.
 // Add a toggle button that lets you sort the moves in either ascending or descending order.
