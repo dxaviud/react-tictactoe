@@ -232,6 +232,6 @@ ReactDOM.render(<Game />, document.getElementById("root"));
 
 // Things I can add to the game:
 
-// Display the location for each move in the format (col, row) in the move moveHistory list.
-// Bold the currently selected item in the move list.
+// Remove the move that is current (since clicking it does nothing) from the move history.
+// Display the location for each most recent move in the move history in the format (col, row)
 // Rewrite Board to use two loops to make the squares instead of hardcoding them.
