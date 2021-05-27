@@ -4,7 +4,10 @@ import "./index.css";
 
 function Square(props) {
     return (
-        <button className="square" onClick={props.onClick}>
+        <button
+            className={"square" + (props.wonSquare ? " won-square" : "")}
+            onClick={props.onClick}
+        >
             {props.value}
         </button>
     );
@@ -12,9 +15,14 @@ function Square(props) {
 
 class Board extends React.Component {
     renderSquare(i) {
+        let wonSquare = false;
+        if (this.props.winningSquares) {
+            wonSquare = this.props.winningSquares.includes(i);
+        }
         return (
             <Square
                 value={this.props.squares[i]}
+                wonSquare={wonSquare}
                 onClick={() => this.props.onClick(i)}
             />
         );
@@ -52,15 +60,80 @@ class Game extends React.Component {
                     squares: Array(9).fill(null),
                 },
             ],
+            historyAscending: true,
             xIsNext: true,
         };
+    }
+
+    render() {
+        const moveHistory = this.state.moveHistory;
+        const moveHistoryButtonList = moveHistory.map((move, moveNumber) => {
+            const moveDescription = moveNumber
+                ? "Go to move #" + moveNumber
+                : "Go to game start";
+            return (
+                <li key={moveNumber}>
+                    <button
+                        className="past-move"
+                        onClick={() => this.jumpTo(moveNumber)}
+                    >
+                        {moveDescription}
+                    </button>
+                </li>
+            );
+        });
+        if (!this.state.historyAscending) {
+            moveHistoryButtonList.reverse();
+        }
+
+        const currentMove = moveHistory[moveHistory.length - 1];
+        const winner = this.calculateWinner(currentMove.squares);
+        let status;
+        if (winner) {
+            status = "Winner: " + winner;
+        } else {
+            status = "Next player: " + (this.state.xIsNext ? "X" : "O");
+        }
+
+        return (
+            <div className="game">
+                <div className="game-board">
+                    <Board
+                        squares={currentMove.squares}
+                        winningSquares={this.winningSquares(
+                            currentMove.squares
+                        )}
+                        onClick={(i) => this.handleClick(i)}
+                    />
+                </div>
+                <div className="game-info">
+                    <div className="status">{status}</div>
+                    <div className="status">
+                        Current move #: {this.moveNumber()}
+                    </div>
+                    <div className="move-history-title">Move history:</div>
+                    <button
+                        className="list-order-toggler"
+                        onClick={() => this.toggleHistoryOrder()}
+                    >
+                        {this.state.historyAscending
+                            ? "Descending"
+                            : "Ascending"}
+                    </button>
+                    <ol>{moveHistoryButtonList}</ol>
+                </div>
+            </div>
+        );
     }
 
     handleClick(i) {
         // i is the index of the square clicked (ranges from 0 - 8)
         const moveHistory = this.state.moveHistory.slice();
         const currentMove = moveHistory[moveHistory.length - 1];
-        if (calculateWinner(currentMove.squares) || currentMove.squares[i]) {
+        if (
+            this.calculateWinner(currentMove.squares) ||
+            currentMove.squares[i]
+        ) {
             return; // gameover or this square is filled, so skip handling
         }
         const newSquares = currentMove.squares.slice();
@@ -82,91 +155,75 @@ class Game extends React.Component {
         }));
     }
 
+    toggleHistoryOrder() {
+        this.setState((prevState) => ({
+            historyAscending: !prevState.historyAscending,
+        }));
+    }
+
+    calculateWinner(squares) {
+        const lines = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6],
+        ];
+        for (let i = 0; i < lines.length; i++) {
+            const [a, b, c] = lines[i];
+            if (
+                squares[a] &&
+                squares[a] === squares[b] &&
+                squares[a] === squares[c]
+            ) {
+                return squares[a];
+            }
+        }
+        if (this.boardFull(squares)) {
+            return "Draw";
+        }
+        return null;
+    }
+
+    winningSquares(squares) {
+        const lines = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6],
+        ];
+        for (let i = 0; i < lines.length; i++) {
+            const [a, b, c] = lines[i];
+            if (
+                squares[a] &&
+                squares[a] === squares[b] &&
+                squares[a] === squares[c]
+            ) {
+                return lines[i].slice();
+            }
+        }
+        return null;
+    }
+
+    boardFull(squares) {
+        for (let i = 0; i < squares.length; ++i) {
+            if (!squares[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     moveNumber() {
         return this.state.moveHistory.length - 1;
     }
-
-    render() {
-        const moveHistory = this.state.moveHistory;
-        const moveHistoryButtonList = moveHistory.map((move, moveNumber) => {
-            const moveDescription = moveNumber
-                ? "Go to move #" + moveNumber
-                : "Go to game start";
-            return (
-                <li key={moveNumber}>
-                    <button
-                        className="past-move"
-                        onClick={() => this.jumpTo(moveNumber)}
-                    >
-                        {moveDescription}
-                    </button>
-                </li>
-            );
-        });
-
-        const currentMove = moveHistory[moveHistory.length - 1];
-        const winner = calculateWinner(currentMove.squares);
-        let status;
-        if (winner) {
-            status = "Winner: " + winner;
-        } else {
-            status = "Next player: " + (this.state.xIsNext ? "X" : "O");
-        }
-
-        return (
-            <div className="game">
-                <div className="game-board">
-                    <Board
-                        squares={currentMove.squares}
-                        onClick={(i) => this.handleClick(i)}
-                    />
-                </div>
-                <div className="game-info">
-                    <div className="status">{status}</div>
-                    <div className="status">
-                        Current move #: {this.moveNumber()}
-                    </div>
-                    <ol>{moveHistoryButtonList}</ol>
-                </div>
-            </div>
-        );
-    }
-}
-
-function calculateWinner(squares) {
-    const lines = [
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
-        [0, 3, 6],
-        [1, 4, 7],
-        [2, 5, 8],
-        [0, 4, 8],
-        [2, 4, 6],
-    ];
-    for (let i = 0; i < lines.length; i++) {
-        const [a, b, c] = lines[i];
-        if (
-            squares[a] &&
-            squares[a] === squares[b] &&
-            squares[a] === squares[c]
-        ) {
-            return squares[a];
-        }
-    }
-    if (boardFull(squares)) {
-        return "Draw";
-    }
-    return null;
-}
-
-function boardFull(squares) {
-    for (let i = 0; i < squares.length; ++i) {
-        if (!squares[i]) {
-            return false;
-        }
-    }
-    return true;
 }
 
 // ========================================
@@ -178,6 +235,3 @@ ReactDOM.render(<Game />, document.getElementById("root"));
 // Display the location for each move in the format (col, row) in the move moveHistory list.
 // Bold the currently selected item in the move list.
 // Rewrite Board to use two loops to make the squares instead of hardcoding them.
-// Add a toggle button that lets you sort the moves in either ascending or descending order.
-// When someone wins, highlight the three squares that caused the win.
-// When no one wins, display a message about the result being a draw.
