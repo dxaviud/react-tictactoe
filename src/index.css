@@ -54,7 +54,7 @@ ol {
     margin-left: 20px;
 }
 
-@media (max-width: 620px) {
+@media (max-width: 700px) {
     .game {
         flex-direction: column;
     }
