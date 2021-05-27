@@ -56,7 +56,8 @@ class Game extends React.Component {
         };
     }
 
-    handleClick(i) { // i is the index of the square clicked (ranges from 0 - 8)
+    handleClick(i) {
+        // i is the index of the square clicked (ranges from 0 - 8)
         const moveHistory = this.state.moveHistory.slice();
         const currentMove = moveHistory[moveHistory.length - 1];
         if (calculateWinner(currentMove.squares) || currentMove.squares[i]) {
@@ -77,7 +78,7 @@ class Game extends React.Component {
     jumpTo(moveNumber) {
         this.setState((prevState) => ({
             moveHistory: prevState.moveHistory.slice(0, moveNumber + 1), // delete the portion of moveHistory after step
-            xIsNext: (moveNumber % 2) === 0,
+            xIsNext: moveNumber % 2 === 0,
         }));
     }
 
@@ -88,7 +89,9 @@ class Game extends React.Component {
     render() {
         const moveHistory = this.state.moveHistory;
         const moveHistoryButtonList = moveHistory.map((move, moveNumber) => {
-            const moveDescription = moveNumber ? "Go to move #" + moveNumber : "Go to game start";
+            const moveDescription = moveNumber
+                ? "Go to move #" + moveNumber
+                : "Go to game start";
             return (
                 <li key={moveNumber}>
                     <button
@@ -100,7 +103,7 @@ class Game extends React.Component {
                 </li>
             );
         });
-        
+
         const currentMove = moveHistory[moveHistory.length - 1];
         const winner = calculateWinner(currentMove.squares);
         let status;
@@ -109,18 +112,20 @@ class Game extends React.Component {
         } else {
             status = "Next player: " + (this.state.xIsNext ? "X" : "O");
         }
-        
+
         return (
             <div className="game">
                 <div className="game-board">
                     <Board
                         squares={currentMove.squares}
-                        onClick={i => this.handleClick(i)}
+                        onClick={(i) => this.handleClick(i)}
                     />
                 </div>
                 <div className="game-info">
                     <div className="status">{status}</div>
-                    <div className="status">Current move #: {this.moveNumber()}</div>
+                    <div className="status">
+                        Current move #: {this.moveNumber()}
+                    </div>
                     <ol>{moveHistoryButtonList}</ol>
                 </div>
             </div>
@@ -149,7 +154,19 @@ function calculateWinner(squares) {
             return squares[a];
         }
     }
+    if (boardFull(squares)) {
+        return "Draw";
+    }
     return null;
+}
+
+function boardFull(squares) {
+    for (let i = 0; i < squares.length; ++i) {
+        if (!squares[i]) {
+            return false;
+        }
+    }
+    return true;
 }
 
 // ========================================
