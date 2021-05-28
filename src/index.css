@@ -1,13 +1,25 @@
 :root {
     --font-size: 24px;
+    --main-color: rgb(97, 218, 251);
+    --dark-color: rgb(40, 44, 52);
+    --darker-color: rgb(32, 35, 42);
+    --light-color: rgb(200, 200, 200);
+    --lighter-color: white;
     --square-size: calc(min(100vw, 100vh) * 0.2);
     --square-border: 1.5px;
     --square-won-color: #afa;
+    --game-info-margin: 40px;
+    background-color: var(--dark-color);
+    color: var(--lighter-color);
+}
+
+.main-color {
+    color: var(--main-color);
 }
 
 body {
     font: var(--font-size) monospace, sans-serif;
-    margin: 20px;
+    margin: 20px 5px 20px 20px;
 }
 
 ul,
@@ -16,8 +28,16 @@ ol {
 }
 
 .past-move {
-    border-radius: 0;
+    border: none;
+    padding: 0.5em 1em;
     font-size: calc(var(--font-size) / 1.5);
+    background-color: var(--darker-color);
+    color: var(--main-color);
+    transition: color 0.2s ease-out;
+}
+
+.past-move:hover {
+    color: var(--lighter-color);
 }
 
 .board-row:after {
@@ -37,12 +57,21 @@ ol {
 }
 
 .list-order-toggler {
+    background-color: var(--main-color);
     font-size: calc(var(--font-size) / 1.5);
+    color: var(--darker-color);
+    border: none;
+    padding: 0.5em 1em;
+    transition: background-color 0.2s ease-out;
+}
+
+.list-order-toggler:hover {
+    background-color: var(--lighter-color);
 }
 
 .square {
-    background: #fff;
-    border: var(--square-border) solid #777;
+    background-color: var(--dark-color);
+    border: var(--square-border) solid var(--main-color);
     width: var(--square-size);
     height: var(--square-size);
     padding: 0;
@@ -51,6 +80,7 @@ ol {
     float: left;
     font-size: calc(var(--square-size) * 0.8);
     font-weight: bold;
+    color: var(--main-color);
     line-height: var(--square-size);
     text-align: center;
 }
@@ -65,16 +95,22 @@ ol {
 }
 
 .game-info {
-    margin-left: 20px;
+    margin-left: var(--game-info-margin);
 }
 
-@media (max-width: 700px) {
+@media (max-width: 770px) {
     .game {
         flex-direction: column;
     }
 
     .game-info {
         margin-left: 0;
-        margin-top: 20px;
+        margin-top: var(--game-info-margin);
+    }
+}
+
+@media (max-width: 500px) {
+    :root {
+        --square-size: calc(min(100vw, 100vh) * 0.3);
     }
 }
