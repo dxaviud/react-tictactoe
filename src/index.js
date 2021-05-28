@@ -90,9 +90,20 @@ class Game extends React.Component {
         const winner = this.calculateWinner(currentMove.squares);
         let status;
         if (winner) {
-            status = "Winner: " + winner;
+            status = (
+                <span>
+                    Winner: <span className="main-color">{winner}</span>
+                </span>
+            );
         } else {
-            status = "Next player: " + (this.state.xIsNext ? "X" : "O");
+            status = (
+                <span>
+                    Next player:{" "}
+                    <span className="main-color">
+                        {this.state.xIsNext ? "X" : "O"}
+                    </span>
+                </span>
+            );
         }
 
         return (
@@ -109,7 +120,8 @@ class Game extends React.Component {
                 <div className="game-info">
                     <div className="status">{status}</div>
                     <div className="status">
-                        Current move #: {this.moveNumber()}
+                        Current move #:{" "}
+                        <span className="main-color">{this.moveNumber()}</span>
                     </div>
                     <div className="move-history-title">Move history:</div>
                     <button
