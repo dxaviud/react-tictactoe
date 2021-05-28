@@ -29,25 +29,41 @@ class Board extends React.Component {
     }
 
     render() {
+        const board = [];
+        for (let i = 0; i < 3; ++i) {
+            const boardRow = [];
+            for (let j = 0; j < 3; ++j) {
+                boardRow.push(this.renderSquare(i * 3 + j));
+            }
+            board.push(<div className="board-row">{boardRow}</div>);
+        }
         return (
             <div>
-                <div className="board-row">
-                    {this.renderSquare(0)}
-                    {this.renderSquare(1)}
-                    {this.renderSquare(2)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(3)}
-                    {this.renderSquare(4)}
-                    {this.renderSquare(5)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(6)}
-                    {this.renderSquare(7)}
-                    {this.renderSquare(8)}
-                </div>
+                {board}
             </div>
         );
+
+        // above does same as below
+
+        // return (
+        //     <div>
+        //         <div className="board-row">
+        //             {this.renderSquare(0)}
+        //             {this.renderSquare(1)}
+        //             {this.renderSquare(2)}
+        //         </div>
+        //         <div className="board-row">
+        //             {this.renderSquare(3)}
+        //             {this.renderSquare(4)}
+        //             {this.renderSquare(5)}
+        //         </div>
+        //         <div className="board-row">
+        //             {this.renderSquare(6)}
+        //             {this.renderSquare(7)}
+        //             {this.renderSquare(8)}
+        //         </div>
+        //     </div>
+        // );
     }
 }
 
@@ -248,5 +264,4 @@ ReactDOM.render(<Game />, document.getElementById("root"));
 
 // Things I can add to the game:
 
-// Display the location for each most recent move in the move history in the format (col, row)
-// Rewrite Board to use two loops to make the squares instead of hardcoding them.
+// Highlight most recent move
