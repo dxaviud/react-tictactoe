@@ -1,4 +1,8 @@
-# Getting Started with Create React App
+# react-tictactoe
+
+Tic-tac-toe made with [React](https://reactjs.org/) with React's color theme.
+
+__________________________________________________________________________________________________________________________________
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
