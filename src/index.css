@@ -89,6 +89,10 @@ ol {
     background-color: var(--square-won-color);
 }
 
+.most-recent-square {
+    background-color: var(--darker-color);
+}
+
 .game {
     display: flex;
     flex-direction: row;
