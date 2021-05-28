@@ -67,7 +67,7 @@ class Game extends React.Component {
 
     render() {
         const moveHistory = this.state.moveHistory;
-        const moveHistoryButtonList = moveHistory.map((move, moveNumber) => {
+        let moveHistoryButtonList = moveHistory.map((move, moveNumber) => {
             const moveDescription = moveNumber
                 ? "Go to move #" + moveNumber
                 : "Go to game start";
@@ -82,8 +82,12 @@ class Game extends React.Component {
                 </li>
             );
         });
+        moveHistoryButtonList.pop(); // don't show the current move button since clicking it does nothing
         if (!this.state.historyAscending) {
             moveHistoryButtonList.reverse();
+        }
+        if (moveHistoryButtonList.length === 0) {
+            moveHistoryButtonList = (<li>No history.</li>);
         }
 
         const currentMove = moveHistory[moveHistory.length - 1];
@@ -244,6 +248,5 @@ ReactDOM.render(<Game />, document.getElementById("root"));
 
 // Things I can add to the game:
 
-// Remove the move that is current (since clicking it does nothing) from the move history.
 // Display the location for each most recent move in the move history in the format (col, row)
 // Rewrite Board to use two loops to make the squares instead of hardcoding them.
