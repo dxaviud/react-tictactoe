@@ -5,7 +5,14 @@ import "./index.css";
 function Square(props) {
     return (
         <button
-            className={"square" + (props.wonSquare ? " won-square" : "")}
+            className={
+                "square" +
+                (props.wonSquare
+                    ? " won-square"
+                    : props.mostRecentSquare
+                    ? " most-recent-square"
+                    : "")
+            }
             onClick={props.onClick}
         >
             {props.value}
@@ -14,16 +21,17 @@ function Square(props) {
 }
 
 class Board extends React.Component {
-    renderSquare(i) {
+    renderSquare(squareIndex) {
         let wonSquare = false;
         if (this.props.winningSquares) {
-            wonSquare = this.props.winningSquares.includes(i);
+            wonSquare = this.props.winningSquares.includes(squareIndex);
         }
         return (
             <Square
-                value={this.props.squares[i]}
+                value={this.props.squares[squareIndex]}
                 wonSquare={wonSquare}
-                onClick={() => this.props.onClick(i)}
+                mostRecentSquare={squareIndex === this.props.mostRecentSquareIndex}
+                onClick={() => this.props.onClick(squareIndex)}
             />
         );
     }
@@ -33,15 +41,12 @@ class Board extends React.Component {
         for (let i = 0; i < 3; ++i) {
             const boardRow = [];
             for (let j = 0; j < 3; ++j) {
-                boardRow.push(this.renderSquare(i * 3 + j));
+                const squareIndex = i * 3 + j;
+                boardRow.push(this.renderSquare(squareIndex));
             }
             board.push(<div className="board-row">{boardRow}</div>);
         }
-        return (
-            <div>
-                {board}
-            </div>
-        );
+        return <div>{board}</div>;
 
         // above does same as below
 
@@ -74,6 +79,7 @@ class Game extends React.Component {
             moveHistory: [
                 {
                     squares: Array(9).fill(null),
+                    mostRecentSquareIndex: -1,
                 },
             ],
             historyAscending: true,
@@ -103,7 +109,7 @@ class Game extends React.Component {
             moveHistoryButtonList.reverse();
         }
         if (moveHistoryButtonList.length === 0) {
-            moveHistoryButtonList = (<li>No history.</li>);
+            moveHistoryButtonList = <li>No history.</li>;
         }
 
         const currentMove = moveHistory[moveHistory.length - 1];
@@ -134,7 +140,8 @@ class Game extends React.Component {
                         winningSquares={this.winningSquares(
                             currentMove.squares
                         )}
-                        onClick={(i) => this.handleClick(i)}
+                        mostRecentSquareIndex={currentMove.mostRecentSquareIndex}
+                        onClick={(squareIndex) => this.handleClick(squareIndex)}
                     />
                 </div>
                 <div className="game-info">
@@ -158,20 +165,21 @@ class Game extends React.Component {
         );
     }
 
-    handleClick(i) {
-        // i is the index of the square clicked (ranges from 0 - 8)
+    handleClick(squareIndex) {
+        // squareIndex ranges from 0 - 8
         const moveHistory = this.state.moveHistory.slice();
         const currentMove = moveHistory[moveHistory.length - 1];
         if (
             this.calculateWinner(currentMove.squares) ||
-            currentMove.squares[i]
+            currentMove.squares[squareIndex]
         ) {
             return; // gameover or this square is filled, so skip handling
         }
         const newSquares = currentMove.squares.slice();
-        newSquares[i] = this.state.xIsNext ? "X" : "O";
+        newSquares[squareIndex] = this.state.xIsNext ? "X" : "O";
         const newMove = {
             squares: newSquares,
+            mostRecentSquareIndex: squareIndex,
         };
         const newMoveHistory = moveHistory.concat(newMove);
         this.setState((prevState) => ({
@@ -261,7 +269,3 @@ class Game extends React.Component {
 // ========================================
 
 ReactDOM.render(<Game />, document.getElementById("root"));
-
-// Things I can add to the game:
-
-// Highlight most recent move
