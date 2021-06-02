@@ -85,6 +85,7 @@ class Game extends React.Component {
             historyAscending: true,
             xIsNext: true,
         };
+        this.toggleHistoryOrder = this.toggleHistoryOrder.bind(this);
     }
 
     render() {
@@ -153,7 +154,7 @@ class Game extends React.Component {
                     <div className="move-history-title">Move history:</div>
                     <button
                         className="list-order-toggler"
-                        onClick={() => this.toggleHistoryOrder()}
+                        onClick={this.toggleHistoryOrder}
                     >
                         {this.state.historyAscending
                             ? "Descending"
