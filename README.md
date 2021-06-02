@@ -1,8 +1,8 @@
-# react-tictactoe
+# [tictacreactoe](https://tictacreactoe.netlify.app/)
 
-Tic-tac-toe made with [React](https://reactjs.org/) with React's color theme.
+Tic-tac-toe made with [React](https://reactjs.org/) with React's color theme. Deployed to Netlify (Access it [here](https://tictacreactoe.netlify.app/)).
 
-__________________________________________________________________________________________________________________________________
+___
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
